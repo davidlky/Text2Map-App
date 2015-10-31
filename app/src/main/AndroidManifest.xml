@@ -28,11 +28,23 @@
         <activity
             android:name=".MapDisplay"
             android:label="@string/title_activity_map_display" >
+        </activity>
+        <activity
+            android:name=".MainView"
+            android:label="@string/title_activity_main_view" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/title_activity_search">
+        </activity>
+        <activity
+            android:name=".ResultsActivity"
+            android:label="@string/title_activity_results"
+            android:parentActivityName=".SearchActivity">
         </activity>
     </application>
 
