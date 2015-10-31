@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Text2Map</string>
+    <string name="title_activity_map_display">Map</string>
+</resources>
