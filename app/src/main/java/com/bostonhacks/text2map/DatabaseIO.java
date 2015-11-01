@@ -89,9 +89,9 @@ public class DatabaseIO {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(SQLiteHelper.columns[1], location.lat);
-        values.put(SQLiteHelper.columns[2], location.lon);
-        values.put(SQLiteHelper.columns[3], location.current_time);
+        values.put(SQLiteHelper.columns_user[1], location.lat);
+        values.put(SQLiteHelper.columns_user[2], location.lon);
+        values.put(SQLiteHelper.columns_user[3], location.current_time);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;

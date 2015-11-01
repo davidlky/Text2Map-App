@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -23,8 +24,7 @@ public class SearchActivity extends AppCompatActivity {
 //        BitmapDrawable ob = decodeSampledBitmapFromResource(R.id.)
 //        findViewById(R.id.linear_layout).setBackground(new Drawable() {
 //        });
-        direction = new Direction();
-        direction.type= Direction.TYPE.R;
+        direction = (Direction) getIntent().getSerializableExtra("Direction");
     }
 
     @Override
@@ -51,10 +51,26 @@ public class SearchActivity extends AppCompatActivity {
 
     public void next(View view) {
         TextView tv  = (TextView) findViewById(R.id.text_question);
-        tv.setText("Where do you plan to go?");
-        findViewById(R.id.card_view).setVisibility(View.GONE);
-        findViewById(R.id.card_view_2).setVisibility(View.VISIBLE);
-        direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
+        switch(direction.type){
+            case R:
+                tv.setText("Where do you plan to go?");
+                findViewById(R.id.card_view).setVisibility(View.GONE);
+                findViewById(R.id.card_view_2).setVisibility(View.VISIBLE);
+                direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
+                break;
+            case P:
+                Toast.makeText(SearchActivity.this, "More to Come", Toast.LENGTH_SHORT).show();
+                break;
+            case W:
+                break;
+            case F:
+                Intent i = new Intent(SearchActivity.this,ResultsActivity.class);
+                direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
+                direction.record(this);
+                i.putExtra("Direction",direction);
+                startActivity(i);
+                break;
+        }
 
     }
 
@@ -112,6 +128,16 @@ public class SearchActivity extends AppCompatActivity {
             findViewById(R.id.card_view).setVisibility(View.VISIBLE);
         }else{
             super.onBackPressed();
+        }
+    }
+
+    public void setGPS(View view) {
+        GPSGetter gps = new GPSGetter(this,(TextView) findViewById(R.id.editText));
+        UserLocation userLocation = gps.getLocation();
+        if (userLocation==null){
+            Toast.makeText(this, "Location not yet found!", Toast.LENGTH_SHORT).show();
+        }else {
+            ((TextView) findViewById(R.id.editText)).setText(userLocation.lat + "," + userLocation.lon);
         }
     }
 }

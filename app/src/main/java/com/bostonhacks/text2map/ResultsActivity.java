@@ -1,6 +1,10 @@
 package com.bostonhacks.text2map;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.view.Menu;
@@ -14,6 +18,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
@@ -66,6 +72,7 @@ public class ResultsActivity extends AppCompatActivity {
         switch (direction.type){
             case R:
                 message+="r ";
+                message += direction.getID()+"\n"+direction.from+"\n"+direction.to;
                 break;
             case P:
                 message+="p ";
@@ -75,10 +82,10 @@ public class ResultsActivity extends AppCompatActivity {
                 break;
             case F:
                 message+="f ";
+                message += direction.getID()+"\n"+direction.from;
                 break;
         }
         String phoneNumber = getString(R.string.twilio_number);
-        message += direction.getID()+"\n"+direction.from+"\n"+direction.to;
 
         SmsManager smsManager = SmsManager.getDefault();
         ArrayList<String> parts = smsManager.divideMessage(message);
@@ -125,10 +132,27 @@ public class ResultsActivity extends AppCompatActivity {
                 if(value.equals("no routes found")){
                     ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("No Routes Were Found");
                 }else {
-                    ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("Route was found");
-                    setUpMapPolyline(value);
+                    switch (direction.type){
+                        case R:
+                            ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("Route was found");
+                            setUpMapPolyline(value);
+                            break;
+                        case P:
+                            break;
+                        case W:
+                            break;
+                        case F:
+                            ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("Route was found");
+                            setUpMapPinpoints(value);
+                            break;
+                    }
                 }
                 ((TextView)fragment.inflated.findViewById(R.id.search_strings_display_text)).setText(direction.from + " to " + direction.to);
+            }
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
             }
         }
     }
@@ -149,7 +173,6 @@ public class ResultsActivity extends AppCompatActivity {
         polyline.color(getResources().getColor(R.color.primary));
         mMap.addPolyline(polyline);
 
-
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (LatLng point : points) {
             builder.include(point);
@@ -165,7 +188,48 @@ public class ResultsActivity extends AppCompatActivity {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
             }
         });
+        mMap.setOnMyLocationChangeListener(myLocationChangeListener);
+
 
         //public class WaitForFile
+    }
+    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+
+            double lat = location.getLatitude ();
+            double lon = location.getLongitude ();
+
+            UserLocation userLocation = new UserLocation();
+            userLocation.lat = Double.toString(lat);
+            userLocation.lon = Double.toString(lon);
+            long time = System.currentTimeMillis();
+            userLocation.current_time = Long.toString(time);
+            userLocation.save(getBaseContext());
+        }
+    };
+
+    public void setUpMapPinpoints(String upMapPinpoints) {
+        String[] lines = upMapPinpoints.split("\n");
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (String line :lines){
+            String[] sub = line.split(" ",3);
+            LatLng loc = new LatLng(Double.parseDouble(sub[0]), Double.parseDouble(sub[1]));
+            Marker m = mMap.addMarker(new MarkerOptions().position(loc).title(sub[2]));
+            builder.include(m.getPosition());
+        }
+
+
+        final LatLngBounds bounds = builder.build();
+        int padding = 20; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
+                padding);
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+            }
+        });
     }
 }

@@ -9,10 +9,12 @@ import android.view.View;
 
 public class TaskChooserActivity extends AppCompatActivity {
 
+    Direction direction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_chooser);
+        direction = new Direction();
     }
 
     @Override
@@ -38,27 +40,35 @@ public class TaskChooserActivity extends AppCompatActivity {
     }
 
     public void goToRoutes(View view) {
+        direction.type = Direction.TYPE.R;
         Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("Direction",direction);
         startActivity(i);
     }
 
     public void goToPTransit(View view) {
+        direction.type = Direction.TYPE.P;
         Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("Direction", direction);
         startActivity(i);
     }
 
     public void goToFood(View view) {
+        direction.type = Direction.TYPE.F;
         Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("Direction", direction);
         startActivity(i);
     }
 
 
     public void goToWifi(View view) {
+        direction.type = Direction.TYPE.W;
         Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("Direction",direction);
         startActivity(i);
     }
 }

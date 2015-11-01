@@ -21,7 +21,7 @@ public class SMSListener extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
             String msg_from;
-            String[] identifier;
+            String[] identifier = new String[2];
             if (bundle != null){
                 //---retrieve the SMS message received---
                 try{
@@ -46,7 +46,14 @@ public class SMSListener extends BroadcastReceiver {
                     }
                     Direction direction = new Direction();
                     direction.response = msgBody;
-                    direction.type = Direction.TYPE.R;
+                    switch (identifier[0].charAt(0)){
+                        case 'r':
+                            direction.type = Direction.TYPE.R;
+                            break;
+                        case 'f':
+                            direction.type = Direction.TYPE.F;
+                            break;
+                    }
                     direction.setID(id);
                     direction.record(context);
 

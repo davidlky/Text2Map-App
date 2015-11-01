@@ -1,5 +1,7 @@
 package com.bostonhacks.text2map;
 
+import android.content.Context;
+
 import java.io.Serializable;
 
 /**
@@ -7,4 +9,10 @@ import java.io.Serializable;
  */
 public class UserLocation implements Serializable {
     String lat,lon,current_time;
+    long id;
+
+    public void save(Context c){
+        DatabaseIO databaseIO = new DatabaseIO(c);
+        id = databaseIO.recordHistory(this);
+    }
 }
