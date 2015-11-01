@@ -1,6 +1,6 @@
 package com.bostonhacks.text2map;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
  * A placeholder fragment containing a simple view.
  */
 public class ResultsActivityFragment extends Fragment {
+    View inflated;
 
     public ResultsActivityFragment() {
     }
@@ -17,6 +18,7 @@ public class ResultsActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_results, container, false);
+        inflated = inflater.inflate(R.layout.fragment_results, container, false);
+        return inflated;
     }
 }

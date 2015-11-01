@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 /**
  * Created by David Liu on 10/31/2015.
@@ -20,18 +21,37 @@ public class SMSListener extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
             String msg_from;
+            String[] identifier;
             if (bundle != null){
                 //---retrieve the SMS message received---
                 try{
                     Object[] pdus = (Object[]) bundle.get("pdus");
                     msgs = new SmsMessage[pdus.length];
+                    String msgBody ="";
+                    long id = -1;
                     for(int i=0; i<msgs.length; i++){
-                        msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                         msg_from = msgs[i].getOriginatingAddress();
-                        String msgBody = msgs[i].getMessageBody();
+                        if(msg_from.contains(context.getString(R.string.twilio_number))) {
+                            if (i == 0) {
+                                String a = msgs[i].getMessageBody();
+                                int x =  a.indexOf("\n");
+                                identifier = a.substring(0,x).split(" ");
+                                id = Long.parseLong(identifier[1]);
+                                msgBody += a.substring(a.indexOf("\n")+1);
+                            } else {
+                                msgBody += msgs[i].getMessageBody();
+                            }
+                        }
                     }
+                    Direction direction = new Direction();
+                    direction.response = msgBody;
+                    direction.type = Direction.TYPE.R;
+                    direction.setID(id);
+                    direction.record(context);
+
                 }catch(Exception e){
-//                            Log.d("Exception caught",e.getMessage());
+                            Log.d("Exception caught", e.getMessage());
                 }
             }
         }

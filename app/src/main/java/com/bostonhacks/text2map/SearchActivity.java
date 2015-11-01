@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 public class SearchActivity extends AppCompatActivity {
 
+    Direction direction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,8 @@ public class SearchActivity extends AppCompatActivity {
 //        BitmapDrawable ob = decodeSampledBitmapFromResource(R.id.)
 //        findViewById(R.id.linear_layout).setBackground(new Drawable() {
 //        });
+        direction = new Direction();
+        direction.type= Direction.TYPE.R;
     }
 
     @Override
@@ -50,11 +54,15 @@ public class SearchActivity extends AppCompatActivity {
         tv.setText("Where do you plan to go?");
         findViewById(R.id.card_view).setVisibility(View.GONE);
         findViewById(R.id.card_view_2).setVisibility(View.VISIBLE);
+        direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
 
     }
 
     public void gotoMaps(View view) {
         Intent i = new Intent(SearchActivity.this,ResultsActivity.class);
+        direction.to = ((TextView) findViewById(R.id.editText2)).getText().toString();
+        direction.record(this);
+        i.putExtra("Direction",direction);
         startActivity(i);
     }
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -93,5 +101,17 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         return inSampleSize;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(findViewById(R.id.card_view).getVisibility()==View.GONE){
+            TextView tv  = (TextView) findViewById(R.id.text_question);
+            tv.setText("Where are you now?");
+            findViewById(R.id.card_view_2).setVisibility(View.GONE);
+            findViewById(R.id.card_view).setVisibility(View.VISIBLE);
+        }else{
+            super.onBackPressed();
+        }
     }
 }

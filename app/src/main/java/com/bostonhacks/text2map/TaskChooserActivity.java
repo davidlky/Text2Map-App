@@ -7,18 +7,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainView extends AppCompatActivity {
+public class TaskChooserActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_view);
+        setContentView(R.layout.activity_task_chooser);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_view, menu);
+        getMenuInflater().inflate(R.menu.menu_task_chooser, menu);
         return true;
     }
 
@@ -37,8 +37,27 @@ public class MainView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToSearch(View view) {
-        Intent i = new Intent(MainView.this,TaskChooserActivity.class);
+    public void goToRoutes(View view) {
+        Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
+
+    public void goToPTransit(View view) {
+        Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
+
+    public void goToFood(View view) {
+        Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
+
+
+    public void goToWifi(View view) {
+        Intent i = new Intent(TaskChooserActivity.this,SearchActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }

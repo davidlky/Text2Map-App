@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bostonhacks.text2map" >
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,6 +28,17 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <receiver android:name=".BootCompletedIntentReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".SMSListener" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainView"
             android:label="@string/app_name"
@@ -36,12 +50,18 @@
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:label="@string/title_activity_search">
+            android:label="@string/title_activity_search"
+            android:parentActivityName=".TaskChooserActivity" >
         </activity>
         <activity
             android:name=".ResultsActivity"
             android:label="@string/title_activity_results"
-            android:parentActivityName=".SearchActivity">
+            android:parentActivityName=".SearchActivity" >
+        </activity>
+        <activity
+            android:name=".TaskChooserActivity"
+            android:label="@string/title_activity_task_chooser"
+            android:theme="@style/NoActionBar">
         </activity>
     </application>
 

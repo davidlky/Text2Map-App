@@ -2,8 +2,11 @@ package com.bostonhacks.text2map;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,21 +17,73 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
+    Direction direction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+        setTitle("Search Results");
 
-        setUpMapIfNeeded();
+        direction = (Direction) getIntent().getSerializableExtra("Direction");
+        sendLongSMS();
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()){
+                try {
+                    synchronized (this) {
+                        wait(5000);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(direction.query(getBaseContext())){
+                                    setUpMapIfNeeded(direction.response);
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                        });
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                }
+            };
+        };
+        thread.start();
     }
 
+    public void sendLongSMS() {
+        String message ="";
+        switch (direction.type){
+            case R:
+                message+="r ";
+                break;
+            case P:
+                message+="p ";
+                break;
+            case W:
+                message+="w ";
+                break;
+            case F:
+                message+="f ";
+                break;
+        }
+        String phoneNumber = getString(R.string.twilio_number);
+        message += direction.getID()+"\n"+direction.from+"\n"+direction.to;
 
+        SmsManager smsManager = SmsManager.getDefault();
+        ArrayList<String> parts = smsManager.divideMessage(message);
+        smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -52,31 +107,28 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
 
-
     /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
+     * setUpMapIfNeeded
+     *
+     * @param value
      */
-    private void setUpMapIfNeeded() {
+    private void setUpMapIfNeeded(String value) {
+        ResultsActivityFragment fragment = (ResultsActivityFragment) getFragmentManager().findFragmentById(R.id.fragment_list);
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
+            if (mMap != null) {//choose what to set up as
+                if(value.equals("no routes found")){
+                    ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("No Routes Were Found");
+                }else {
+                    ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("Route was found");
+                    setUpMapPolyline(value);
+                }
+                ((TextView)fragment.inflated.findViewById(R.id.search_strings_display_text)).setText(direction.from + " to " + direction.to);
             }
         }
     }
@@ -87,9 +139,9 @@ public class ResultsActivity extends AppCompatActivity {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private void setUpMap() {
+    private void setUpMapPolyline(String value) {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-        List<LatLng> points =  PolyUtil.decode("cknaGxo_qLiPvaB}Wvc@wOaw@~M`w@qEzgFd`Az`Lz{@duIbt@zsFdpAvtDt\\bpAiVrbD`l@jqGl_AveFlvBhcHneAjtF`iCthDrpBz}Fy@xdF|XpzKv|@lbGlfBlfLjrC|gO|kBhgFno@d|GrlBlgJed@fqC`Jt`EwfDbzHi|BpuEzNrrFvsA~~FwjAp`Elj@zwD`|Av|CiM~qFeoAxyE|s@zxOkp@jkHvXpwBjgAnfCxFphFjnAfkDm]nrHacAztGkDr~Eaa@tzDiv@~yE}IfeDurCfiDuoE~vGmr@hoCfSnkDqPh{C_l@bnCsV`rEggAnuA{zDfsEq|@hiEdNloSsmAhpJkwBzaAsrAzyDulBflEag@hcC{{AlvAww@dyAfJjmAaj@r~@uyA|iEidA|zAq`Bla@am@n_@yw@hdBkdAxwDiqAnsAyc@loBKzjH{oAfaGa}BvcKg}Eyc@{dBzh@wpCeXgwF__@ohBbfEaxD`oE_|BtAi|@rjAqnF``KaoCrrHerA~xFilBts@utBBelB_b@wgBlsBo}BtwCg`CriFk}AphHenCnoRlLphKokA`vGob@ryErnDnnIxyBh}CzYbuBtExgIiqAd_G_EfrB{j@t}Ak_Bf`A_r@`s@_xAjl@cnDz|C{v@|{C|EpyF_jDnjOrh@fvDz@hdDl_@vwCqYdfCq`@j|HkSdtDiGhzCm_Av`DuaBveByoA|zAe_E|~J_aCpoI}tA~kHmrAbiFfz@nuGxQ`bPufAhlMvfA`mRxKl`HxwAvrHb]tpF~pAxrH}`@~rS~GvwVjA``QlBh}HtChxDev@frB_xA`kE{NboCxmAfkJl_BzaEzAbmGnzAveX|gDpgVbhHziSj|BraNr_Ax~DxRdtDbu@roL`OhjFDfkHmuAvxJkZ|{ImN`_KadAzzUs{@`oOow@tiGmu@pdG{sBx}G_kA`aG}Hd_Id_@tcQsFhdOjqAdaHItbf@heBhhKgn@bfDv[tuYhh@fpXdhC|tJjoBzwLpdC`pSwSdwVoNn{AspAnRixAd|BkhC||D~Ml_BfrAblN{mA|dDsiAvaDwjDv}B{rFzVceCmv@exDtdFkbBlZac@|bAk]pqCnhAllFmn@tkHwxAheHwu@zoI{[r~Umh@|vHqZ~hVmxI~kk@o}G~yEq`CbhAemArqBo|@f`@cg@up@c~B{sD_kE{}EuxGysHs}DykEolCkE_zA_o@o{F{uG{dBskBccG}zGwq@ujAyn@iaG{vAceF`O_fEqk@_oIuNsZw~@n]");
+        List<LatLng> points =  PolyUtil.decode(value);
         PolylineOptions polyline = new PolylineOptions();
         for (LatLng point:points) {
             polyline.add(point);
@@ -113,5 +165,7 @@ public class ResultsActivity extends AppCompatActivity {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
             }
         });
+
+        //public class WaitForFile
     }
 }

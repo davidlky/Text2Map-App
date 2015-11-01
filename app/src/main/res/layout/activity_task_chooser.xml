@@ -1,0 +1,169 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bostonhacks.text2map.TaskChooserActivity">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:duplicateParentState="false"
+        android:elevation="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="What&apos;s on your mind?"
+            android:id="@+id/textView2"
+            android:layout_below="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#fff"
+            android:layout_marginBottom="24dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:padding="24dp"
+            android:elevation="2dp">
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="false"
+                android:background="@drawable/button_secondary"
+                android:elevation="8dp"
+                android:onClick="goToRoutes">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Routes"
+                    android:id="@+id/textView8"
+                    android:layout_centerVertical="true"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView5"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_directions_white_36dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="false"
+                android:background="@drawable/button_secondary"
+                android:elevation="8dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Public Transit"
+                    android:id="@+id/textView7"
+                    android:layout_centerVertical="true"
+                    android:textColor="#fff"
+                    android:onClick="goToPTransit" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView4"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_directions_bus_white_36dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="false"
+                android:background="@drawable/button_secondary"
+                android:elevation="8dp"
+                android:layout_marginTop="16dp"
+                android:onClick="goToWifi">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wifi"
+                    android:id="@+id/textView6"
+                    android:layout_centerVertical="true"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView3"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_wifi_tethering_white_36dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="false"
+                android:background="@drawable/button_secondary"
+                android:elevation="8dp"
+                android:layout_marginTop="16dp"
+                android:onClick="goToFood">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Food"
+                    android:id="@+id/textView3"
+                    android:layout_centerVertical="true"
+                    android:textColor="#fff" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView2"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_favorite_white_36dp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
