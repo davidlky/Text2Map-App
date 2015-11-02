@@ -10,10 +10,10 @@ import java.io.Serializable;
  */
 public class Direction implements Serializable {
     private long id=-1;
-    String to;
-    String from;
+    public String to;
+    public String from;
     String response="";
-    TYPE type;
+    public TYPE type;
 
     public enum TYPE{
         R,P,W,F

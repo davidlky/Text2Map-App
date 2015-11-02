@@ -1,9 +1,12 @@
 package com.bostonhacks.text2map;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import com.bostonhacks.text2map.Adapters.HistoryListAdapter;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -11,6 +14,8 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        DatabaseIO io = new DatabaseIO(this);
+        ((ListView) findViewById(R.id.listView)).setAdapter(new HistoryListAdapter(this,io.getAllHistory()));
     }
 
     @Override

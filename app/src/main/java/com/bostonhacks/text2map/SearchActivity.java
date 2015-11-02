@@ -43,7 +43,8 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent i = new Intent(SearchActivity.this,HistoryActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -51,6 +52,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void next(View view) {
         TextView tv  = (TextView) findViewById(R.id.text_question);
+        Intent i = new Intent(SearchActivity.this,ResultsActivity.class);
         switch(direction.type){
             case R:
                 tv.setText("Where do you plan to go?");
@@ -62,9 +64,12 @@ public class SearchActivity extends AppCompatActivity {
                 Toast.makeText(SearchActivity.this, "More to Come", Toast.LENGTH_SHORT).show();
                 break;
             case W:
+                direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
+                direction.record(this);
+                i.putExtra("Direction",direction);
+                startActivity(i);
                 break;
             case F:
-                Intent i = new Intent(SearchActivity.this,ResultsActivity.class);
                 direction.from = ((TextView) findViewById(R.id.editText)).getText().toString();
                 direction.record(this);
                 i.putExtra("Direction",direction);

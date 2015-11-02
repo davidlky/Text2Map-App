@@ -79,6 +79,7 @@ public class ResultsActivity extends AppCompatActivity {
                 break;
             case W:
                 message+="w ";
+                message += direction.getID()+"\n"+direction.from;
                 break;
             case F:
                 message+="f ";
@@ -139,9 +140,8 @@ public class ResultsActivity extends AppCompatActivity {
                             break;
                         case P:
                             break;
-                        case W:
-                            break;
                         case F:
+                        case W:
                             ((TextView)fragment.inflated.findViewById(R.id.status_text)).setText("Route was found");
                             setUpMapPinpoints(value);
                             break;

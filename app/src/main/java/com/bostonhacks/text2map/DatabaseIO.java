@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 /**
  * Created by David Liu on 10/31/2015.
  */
@@ -34,7 +36,7 @@ public class DatabaseIO {
                 values.put(SQLiteHelper.columns[4], "w");
                 break;
             case F:
-                values.put(SQLiteHelper.columns[4], "F");
+                values.put(SQLiteHelper.columns[4], "f");
                 break;
         }
 
@@ -101,5 +103,44 @@ public class DatabaseIO {
                 values);
         db.close();
         return newRowId;
+    }
+    public ArrayList<Direction> getAllHistory(){
+
+
+        String selectQuery = "SELECT  * FROM " + SQLiteHelper.TABLE_NAME + " ORDER BY _ID DESC;";
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        ArrayList<Direction> array  = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Direction curr = new Direction();
+
+                curr.setID(cursor.getInt(0));
+                curr.from = cursor.getString(1);
+                curr.to = cursor.getString(2);
+                curr.response = cursor.getString(3);
+                switch (cursor.getString(4).charAt(0)){
+                    case 'r':
+                        curr.type = Direction.TYPE.R;
+                        break;
+                    case 'p':
+                        curr.type = Direction.TYPE.P;
+                        break;
+                    case 'f':
+                    case 'F':
+                        curr.type = Direction.TYPE.F;
+                        break;
+                    case 'w':
+                        curr.type = Direction.TYPE.W;
+                        break;
+                    default:
+                        curr.type = Direction.TYPE.R;
+                        break;
+                }
+                array.add(curr);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return array;
     }
 }
